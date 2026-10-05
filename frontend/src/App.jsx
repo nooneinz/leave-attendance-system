@@ -12,6 +12,8 @@ import Analytics from './pages/Analytics.jsx'
 import Agents from './pages/Agents.jsx'
 import Admin from './pages/Admin.jsx'
 import Audit from './pages/Audit.jsx'
+import Home from './pages/Home.jsx'
+import { PublicHeader, AppHeader, Footer } from './layout.jsx'
 
 const Auth = createContext(null)
 export const useAuth = () => useContext(Auth)
@@ -46,30 +48,17 @@ function Notifications() {
 }
 
 function Shell({ user, onLogout, children }) {
-  const link = ({ isActive }) => `px-3 py-2 rounded-md font-semibold ${isActive ? 'bg-white text-brand-800' : 'text-white/90 hover:bg-white/10'}`
-  const staff = user.role !== 'admin'
+  const nav = [['/', 'الرئيسية', true], ['/leaves', 'الإجازات'], ['/attendance', 'الحضور'], ['/calendar', 'التقويم'],
+    ...(user.role !== 'employee' ? [['/analytics', 'التحليلات']] : []), ['/agents', 'الوكلاء'],
+    ...(isHR(user) ? [['/admin', 'الإدارة'], ['/audit', 'التدقيق']] : [])]
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="bg-brand-800 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
-          <Link to="/" className="font-bold text-lg ms-1">نظام الإجازات والحضور</Link>
-          <nav className="flex flex-wrap gap-1 flex-1" aria-label="التنقل الرئيسي">
-            <NavLink to="/" end className={link}>الرئيسية</NavLink>
-            <NavLink to="/leaves" className={link}>الإجازات</NavLink>
-            <NavLink to="/attendance" className={link}>الحضور</NavLink>
-            <NavLink to="/calendar" className={link}>التقويم</NavLink>
-            {user.role !== 'employee' && <NavLink to="/analytics" className={link}>التحليلات</NavLink>}
-            <NavLink to="/agents" className={link}>الوكلاء</NavLink>
-            {isHR(user) && <NavLink to="/admin" className={link}>الإدارة</NavLink>}
-            {isHR(user) && <NavLink to="/audit" className={link}>التدقيق</NavLink>}
-          </nav>
-          <span className="text-sm text-white/80">{user.name} — {ROLE[user.role]}</span>
-          <Notifications />
-          <button className="btn btn-ghost" onClick={onLogout}>خروج</button>
-        </div>
-      </header>
-      <main className="max-w-6xl w-full mx-auto px-4 py-6 flex-1">{children}</main>
-      <footer className="text-center text-sm text-muted py-4">Employee Leave &amp; Attendance System — توقيت مسقط (GMT+4)</footer>
+      <AppHeader user={user} nav={nav} right={<>
+        <span className="text-sm text-white/80 hidden md:inline">{user.name} — {ROLE[user.role]}</span>
+        <Notifications />
+        <button className="btn btn-ghost" onClick={onLogout}>خروج</button></>} />
+      <main className="max-w-6xl w-full mx-auto px-4 py-8 flex-1">{children}</main>
+      <Footer />
     </div>
   )
 }
@@ -86,7 +75,7 @@ export default function App() {
   if (!user) return (
     <Routes>
       <Route path="/login" element={<Login onLogin={setUser} />} />
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<div className="min-h-screen flex flex-col"><PublicHeader /><Home /><Footer /></div>} />
     </Routes>
   )
   return (
@@ -103,6 +92,7 @@ export default function App() {
           <Route path="/agents" element={<Agents />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/audit" element={<Audit />} />
+          <Route path="/about" element={<Home authed />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Shell>

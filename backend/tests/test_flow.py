@@ -108,3 +108,21 @@ def test_full_flow():
         assert c.get("/api/audit/verify", headers=hr).json()["valid"] is True
         assert c.get("/api/audit/logs", headers=emp1).status_code == 403
         assert c.get("/api/notifications", headers=emp3).json()
+
+
+def test_agent_chat():
+    with TestClient(app) as c:
+        admin = login(c, "admin@company.local", "admin-pass-123")
+        dept = c.post("/api/departments", json={"name": "العمليات", "min_coverage_pct": 50}, headers=admin).json()
+        for no, name, email, role in [("C1", "علي", "ali@x.om", "employee"), ("C2", "ناصر", "nas@x.om", "manager")]:
+            c.post("/api/users", json={"employee_no": no, "name": name, "email": email, "password": "pass-12345", "role": role, "department_id": dept["id"]}, headers=admin)
+        emp, mgr = login(c, "ali@x.om"), login(c, "nas@x.om")
+        r = c.post("/api/agents/chat", json={"agent": "coverage", "message": "كم رصيد إجازاتي؟"}, headers=emp).json()
+        assert r["mode"] == "rules" and "إجازة سنوية" in r["reply"] and r["trace"][0]["tool"] == "my_balances"
+        d = str(today_om() + timedelta(days=30))
+        r = c.post("/api/agents/chat", json={"agent": "coverage", "message": f"هل أستطيع إجازة سنوية من {d} إلى {d}؟"}, headers=emp).json()
+        assert r["trace"][0]["tool"] == "check_leave_impact"
+        # الموظف لا يرى مخاطر الغياب، والمدير يراها
+        assert "للموارد البشرية" in c.post("/api/agents/chat", json={"agent": "analytics", "message": "من أعلى الموظفين خطورة؟"}, headers=emp).json()["reply"]
+        assert c.post("/api/agents/chat", json={"agent": "analytics", "message": "من أعلى الموظفين خطورة؟"}, headers=mgr).json()["trace"][0]["tool"] == "absence_risk"
+        assert c.post("/api/agents/chat", json={"agent": "x", "message": "hi"}, headers=emp).status_code == 404

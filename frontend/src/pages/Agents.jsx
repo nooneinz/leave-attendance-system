@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, dateAr, REC, isHR } from '../api.js'
 import { useAuth } from '../App.jsx'
+import ChatPanel from '../ChatPanel.jsx'
 
 const Num = ({ label, value, tone = '' }) => <div className="rounded-lg bg-brand-50 p-3 text-center"><div className={`text-2xl font-bold ${tone}`}>{value}</div><div className="text-xs text-muted">{label}</div></div>
 
@@ -9,12 +10,14 @@ export default function Agents() {
   const user = useAuth()
   const [d, setD] = useState(null)
   const [rep, setRep] = useState(null)
+  const [cat, setCat] = useState(null)
   useEffect(() => { const load = () => api('/agents/overview').then(setD); load(); const t = setInterval(load, 10000); return () => clearInterval(t) }, [])
-  useEffect(() => { if (isHR(user)) api('/agents/analytics/latest').then(setRep) }, [user])
+  useEffect(() => { if (isHR(user)) api('/agents/analytics/latest').then(setRep); api('/agents/catalog').then(setCat) }, [user])
   if (!d) return <p>جارٍ التحميل…</p>
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold">وكلاء الذكاء الاصطناعي</h1>
+      {cat && <ChatPanel agents={cat} aiEnabled={d.ai_enabled} model={d.model} />}
       <div className="grid md:grid-cols-2 gap-4">
         <section className="card space-y-4" aria-labelledby="ca">
           <div className="flex items-center gap-2"><h2 id="ca" className="font-bold text-lg flex-1">وكيل الجدول والتغطية</h2><span className="badge bg-emerald-100 text-emerald-900">فعّال</span></div>
