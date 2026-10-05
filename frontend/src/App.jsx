@@ -54,7 +54,7 @@ function Shell({ user, onLogout, children }) {
   return (
     <div className="min-h-screen flex flex-col">
       <AppHeader user={user} nav={nav} right={<>
-        <span className="text-sm text-white/80 hidden md:inline">{user.name} — {ROLE[user.role]}</span>
+        <span className="text-sm text-muted hidden md:inline">{user.name} — {ROLE[user.role]}</span>
         <Notifications />
         <button className="btn btn-ghost" onClick={onLogout}>خروج</button></>} />
       <main className="max-w-6xl w-full mx-auto px-4 py-8 flex-1">{children}</main>

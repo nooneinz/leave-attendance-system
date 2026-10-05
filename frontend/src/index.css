@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "IBM Plex Sans Arabic", system-ui, sans-serif;
-  --color-brand-900: #12372a;
-  --color-brand-800: #1b4d3a;
-  --color-brand-700: #256249;
-  --color-brand-50: #edf5f0;
-  --color-ink: #1c2430;
-  --color-muted: #5b6676;
-  --color-line: #d8dee8;
-  --color-surface: #f5f7fa;
+  --font-sans: "Readex Pro", system-ui, sans-serif;
+  --font-display: "Reem Kufi", "Readex Pro", serif;
+  --color-brand-900: #07302d;
+  --color-brand-800: #0b4f4a;
+  --color-brand-700: #146b63;
+  --color-brand-50: #e8f3f1;
+  --color-accent: #e8a21b;
+  --color-ink: #12201f;
+  --color-muted: #536664;
+  --color-line: #d5e0de;
+  --color-surface: #f2f6f5;
   --color-ok: #1d6b4f;
   --color-warn: #8a5a00;
   --color-bad: #a32a2a;
@@ -17,7 +19,15 @@
 
 html, body, #root { min-height: 100%; }
 body { font-family: var(--font-sans); background: var(--color-surface); color: var(--color-ink); line-height: 1.7; }
-:focus-visible { outline: 3px solid #2f7a5a; outline-offset: 2px; }
+:focus-visible { outline: 3px solid #146b63; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+.font-display { font-family: var(--font-display); }
+h1, h2, h3 { text-wrap: balance; }
+html { scroll-behavior: smooth; }
+
+
+@layer components {
 .card { background: #fff; border: 1px solid var(--color-line); border-radius: 10px; padding: 1.25rem; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: .4rem; min-height: 44px; padding: 0 1.1rem; border-radius: 8px; font-weight: 600; border: 1px solid transparent; cursor: pointer; transition: background .15s; }
 .btn-primary { background: var(--color-brand-800); color: #fff; }
@@ -32,9 +42,16 @@ label.lbl { display: block; font-size: .9rem; font-weight: 600; margin-bottom: .
 .badge { display: inline-block; padding: .1rem .65rem; border-radius: 999px; font-size: .8rem; font-weight: 600; }
 .th { text-align: start; font-size: .82rem; color: var(--color-muted); font-weight: 600; padding: .6rem .75rem; border-bottom: 1px solid var(--color-line); }
 .td { padding: .7rem .75rem; border-bottom: 1px solid #eef1f6; vertical-align: top; }
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
-
-.pattern { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80'%3E%3Cpath d='M40 6l8 14 16-4-4 16 14 8-14 8 4 16-16-4-8 14-8-14-16 4 4-16-14-8 14-8-4-16 16 4z' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E"); background-size: 80px 80px; }
-html { scroll-behavior: smooth; }
-.card { box-shadow: 0 1px 2px rgba(16,24,40,.04); }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+.btn-accent { background: var(--color-accent); color: #1b1303; }
+.btn-accent:hover { background: #f2b33d; }
+.card { box-shadow: 0 1px 2px rgba(7,48,45,.05), 0 8px 24px -16px rgba(7,48,45,.18); }
+}
+/* نقش الفلج: خطوط مياه متموجة متوازية بدل الزخرفة النجمية */
+.aflaj { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='48' viewBox='0 0 160 48'%3E%3Cpath d='M0 12c20 0 20 10 40 10s20-10 40-10 20 10 40 10 20-10 40-10M0 36c20 0 20 10 40 10s20-10 40-10 20 10 40 10 20-10 40-10' fill='none' stroke='white' stroke-width='1.4'/%3E%3C/svg%3E"); background-size: 160px 48px; }
+@keyframes flow { to { stroke-dashoffset: -400; } }
+.flow-line { stroke-dasharray: 14 26; animation: flow 18s linear infinite; }
+@keyframes ping-soft { 0% { transform: scale(1); opacity: .6; } 100% { transform: scale(2.6); opacity: 0; } }
+.ping { transform-origin: center; transform-box: fill-box; animation: ping-soft 2.4s ease-out infinite; }
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .flow-line, .ping { animation: none; } }

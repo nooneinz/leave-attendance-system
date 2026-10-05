@@ -22,56 +22,60 @@ export const Icon = ({ name, size = 22, className = '' }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true"><path d={P[name]} /></svg>
 )
 
-export function Logo({ light = true }) {
+export function Logo({ light = false }) {
   return (
-    <span className="inline-flex items-center gap-2 font-bold text-lg">
-      <span className={`inline-grid place-items-center w-9 h-9 rounded-lg ${light ? 'bg-white/15' : 'bg-brand-800 text-white'}`}><Icon name="calendar" size={20} /></span>
-      <span>نظام الإجازات والحضور</span>
+    <span className="inline-flex items-center gap-2.5">
+      <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden="true">
+        <circle cx="17" cy="17" r="15" fill="none" stroke="currentColor" strokeOpacity=".35" strokeWidth="2" />
+        <path d="M17 2a15 15 0 0 1 12.99 7.5" fill="none" stroke="#e8a21b" strokeWidth="3.5" strokeLinecap="round" />
+        <path d="M17 17V8.5M17 17l5.5 3.2" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" fill="none" />
+        <circle cx="17" cy="17" r="2" fill="currentColor" />
+      </svg>
+      <span className="font-display font-bold text-xl leading-none">وقتي<span className={light ? 'text-white/70' : 'text-muted'} style={{ fontFamily: 'var(--font-sans)', fontWeight: 400, fontSize: '.75rem', marginInlineStart: '.5rem' }}>للإجازات والحضور</span></span>
     </span>
   )
 }
 
 export function PublicHeader() {
   const [open, setOpen] = useState(false)
-  const items = [['#features', 'المزايا'], ['#agents', 'الوكلاء'], ['#oman', 'الهوية العُمانية'], ['#how', 'كيف يعمل']]
+  const items = [['#day', 'يوم في النظام'], ['#features', 'المزايا'], ['#agents', 'الوكلاء'], ['#oman', 'عُمانياً'], ['#faq', 'أسئلة']]
   return (
-    <header className="sticky top-0 z-30 bg-brand-900/95 backdrop-blur text-white border-b border-white/10">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center gap-4">
-        <Link to="/" className="me-auto"><Logo /></Link>
-        <nav className="hidden md:flex gap-1" aria-label="الأقسام">{items.map(([h, l]) => <a key={h} href={h} className="px-3 py-2 rounded-md text-white/85 hover:bg-white/10 font-semibold">{l}</a>)}</nav>
-        <Link to="/login" className="btn bg-white text-brand-800 hover:bg-brand-50">تسجيل الدخول</Link>
-        <button className="md:hidden btn btn-ghost !px-3" aria-label="القائمة" aria-expanded={open} onClick={() => setOpen(!open)}>☰</button>
+    <header className="sticky top-3 z-30 px-3">
+      <div className="max-w-5xl mx-auto rounded-full bg-brand-900/90 backdrop-blur-md text-white border border-white/10 shadow-lg px-3 ps-5 h-14 flex items-center gap-3">
+        <Link to="/" className="me-auto text-white"><Logo light /></Link>
+        <nav className="hidden md:flex gap-0.5" aria-label="الأقسام">{items.map(([h, l]) => <a key={h} href={h} className="px-3 py-1.5 rounded-full text-sm text-white/85 hover:bg-white/10">{l}</a>)}</nav>
+        <Link to="/login" className="btn btn-accent !min-h-[40px] rounded-full">تسجيل الدخول</Link>
+        <button className="md:hidden grid place-items-center w-10 h-10 rounded-full hover:bg-white/10" aria-label="القائمة" aria-expanded={open} onClick={() => setOpen(!open)}>☰</button>
       </div>
-      {open && <nav className="md:hidden px-4 pb-3 flex flex-col" aria-label="الأقسام">{items.map(([h, l]) => <a key={h} href={h} onClick={() => setOpen(false)} className="py-3 border-t border-white/10">{l}</a>)}</nav>}
+      {open && <nav className="md:hidden max-w-5xl mx-auto mt-2 rounded-2xl bg-brand-900/95 text-white p-2 flex flex-col" aria-label="الأقسام">{items.map(([h, l]) => <a key={h} href={h} onClick={() => setOpen(false)} className="px-4 py-3 rounded-xl hover:bg-white/10">{l}</a>)}</nav>}
     </header>
   )
 }
 
-export function Footer({ onHome }) {
+export function Footer() {
   return (
-    <footer className="bg-brand-900 text-white/80 mt-auto">
-      <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-4">
-        <div className="md:col-span-2 space-y-3">
-          <div className="text-white"><Logo /></div>
-          <p className="text-sm leading-7 max-w-md">نظام موارد بشرية لشركات سلطنة عُمان: حضور مرتبط بأجهزة البصمة، إجازات بموافقات حسب الصلاحية، أرصدة دقيقة، ووكلاء ذكاء اصطناعي يفحصون ويحلّلون.</p>
+    <footer className="bg-brand-900 text-white/80 mt-auto relative overflow-hidden">
+      <svg className="absolute top-0 inset-x-0 w-full text-surface -translate-y-px" height="28" viewBox="0 0 1200 28" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h1200v6c-100 22-200 22-300 8S700 4 600 10 400 30 300 24 100 4 0 14z" fill="currentColor" /></svg>
+      <div className="relative max-w-6xl mx-auto px-4 pt-16 pb-8">
+        <div className="font-display text-5xl md:text-7xl font-bold text-white/10 select-none leading-none mb-8" aria-hidden="true">وقتي</div>
+        <div className="grid gap-8 md:grid-cols-[1.5fr_1fr_1fr]">
+          <p className="text-sm leading-8 max-w-md">كل دقيقة دوام وكل يوم إجازة محسوبان بدقة وموثّقان. نظام موارد بشرية لشركات سلطنة عُمان، بتوقيت مسقط وبالريال العماني.</p>
+          <ul className="space-y-2 text-sm"><li className="text-white font-bold mb-1">النظام</li><li><Link to="/about" className="hover:text-white">الصفحة التعريفية</Link></li><li><Link to="/" className="hover:text-white">لوحة التحكم</Link></li><li><Link to="/agents" className="hover:text-white">الوكلاء</Link></li></ul>
+          <ul className="space-y-2 text-sm"><li className="text-white font-bold mb-1">المشروع</li>
+            <li><a className="hover:text-white inline-flex items-center gap-1" href="https://github.com/nooneinz/leave-attendance-system" target="_blank" rel="noreferrer"><Icon name="github" size={16} /> الكود على GitHub</a></li><li>الجمعة والسبت إجازة أسبوعية</li></ul>
         </div>
-        <div><h3 className="text-white font-bold mb-3">النظام</h3>
-          <ul className="space-y-2 text-sm"><li><Link to="/about" className="hover:text-white">الصفحة التعريفية</Link></li><li><Link to="/" className="hover:text-white">لوحة التحكم</Link></li><li><Link to="/agents" className="hover:text-white">الوكلاء</Link></li></ul></div>
-        <div><h3 className="text-white font-bold mb-3">المشروع</h3>
-          <ul className="space-y-2 text-sm"><li><a className="hover:text-white inline-flex items-center gap-1" href="https://github.com/nooneinz/leave-attendance-system" target="_blank" rel="noreferrer"><Icon name="github" size={16} /> الكود على GitHub</a></li>
-            <li>توقيت مسقط (GMT+4)</li><li>العملة: الريال العماني</li></ul></div>
+        <div className="border-t border-white/10 mt-8 pt-4 text-xs flex flex-wrap justify-between gap-2"><span>© {new Date().getFullYear()} وقتي — Employee Leave &amp; Attendance System</span><span>مسقط، سلطنة عُمان</span></div>
       </div>
-      <div className="border-t border-white/10 text-center text-xs py-4">© {new Date().getFullYear()} Employee Leave &amp; Attendance System — جميع الحقوق محفوظة</div>
     </footer>
   )
 }
 
 export function AppHeader({ user, nav, right }) {
-  const link = ({ isActive }) => `px-3 py-2 rounded-md font-semibold transition-colors ${isActive ? 'bg-white text-brand-800' : 'text-white/90 hover:bg-white/10'}`
+  const link = ({ isActive }) => `px-3 py-2 rounded-lg font-semibold text-sm transition-colors border-b-2 ${isActive ? 'bg-brand-50 text-brand-800 border-accent' : 'text-ink/80 border-transparent hover:bg-brand-50'}`
   return (
-    <header className="sticky top-0 z-30 bg-brand-800 text-white shadow">
+    <header className="sticky top-0 z-30 bg-white/90 backdrop-blur border-b border-line">
       <div className="max-w-6xl mx-auto px-4 py-2 flex flex-wrap items-center gap-x-3 gap-y-2">
-        <Link to="/" className="me-2"><Logo /></Link>
+        <Link to="/" className="me-3 text-brand-800"><Logo /></Link>
         <nav className="flex flex-wrap gap-1 flex-1" aria-label="التنقل الرئيسي">
           {nav.map(([to, label, end]) => <NavLink key={to} to={to} end={end} className={link}>{label}</NavLink>)}
         </nav>

@@ -2,13 +2,15 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, timeAr, DAY_STATUS, isHR } from '../api.js'
 import { useAuth } from '../App.jsx'
+import Dial from '../Dial.jsx'
 
 function PunchCard({ onChange }) {
   const [t, setT] = useState(null)
   const [err, setErr] = useState('')
   const [busy, setBusy] = useState(false)
+  const [cfg, setCfg] = useState(null)
   const load = useCallback(() => api('/attendance/today').then(setT), [])
-  useEffect(() => { load() }, [load])
+  useEffect(() => { load(); api('/settings').then(setCfg) }, [load])
   const punch = async () => {
     setBusy(true); setErr('')
     try { await api('/attendance/punch', { method: 'POST' }); await load(); onChange?.() } catch (e) { setErr(e.message) } finally { setBusy(false) }
@@ -20,6 +22,7 @@ function PunchCard({ onChange }) {
   return (
     <section className="card space-y-3" aria-labelledby="pc">
       <div className="flex items-center gap-2"><h2 id="pc" className="font-bold flex-1">بصمة اليوم</h2><span className={`badge ${st[1]}`}>{st[0]}</span></div>
+      {cfg && <div className="flex justify-center"><Dial dark={false} size={210} start={cfg.work_start} end={cfg.work_end} weekend={cfg.weekend.split(',').filter(Boolean).map((w) => (Number(w) + 1) % 7)} /></div>}
       <div className="grid grid-cols-3 gap-2 text-center">
         <div className="rounded-lg bg-brand-50 p-3"><div className="text-xl font-bold">{timeAr(t.first_in)}</div><div className="text-xs text-muted">الحضور</div></div>
         <div className="rounded-lg bg-brand-50 p-3"><div className="text-xl font-bold">{timeAr(t.last_out)}</div><div className="text-xs text-muted">الانصراف</div></div>
